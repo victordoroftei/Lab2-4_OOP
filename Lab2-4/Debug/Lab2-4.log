@@ -1,0 +1,3 @@
+﻿  main.c
+E:\__Teme\Object-Oriented Programming (OOP)\Lab2-4\Lab2-4\main.c(38,21): warning C4013: '_CrtDumpMemoryLeaks' undefined; assuming extern returning int
+  Lab2-4.vcxproj -> E:\__Teme\Object-Oriented Programming (OOP)\Lab2-4\Debug\Lab2-4.exe
