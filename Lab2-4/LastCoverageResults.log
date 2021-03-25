@@ -1,4 +1,4 @@
-[2021-03-12 15:05:14] [info] Start Program:
+[2021-03-22 22:57:15] [info] Start Program:
 Path:"E:\\__Teme\\Object-Oriented Programming (OOP)\\Lab2-4\\Debug\\Lab2-4.exe"
 Arguments:
 Working directory: "E:\\__Teme\\Object-Oriented Programming (OOP)\\Lab2-4\\Lab2-4\\"
@@ -9,13 +9,13 @@ Cover Children: 0
 Aggregate by file: 1
 Continue after C++ exception: 0
 Optimized build support: 0
-Export: binary C:\Users\Vic\AppData\Local\Temp\kscpl1yr.xnu 
+Export: binary C:\Users\Vic\AppData\Local\Temp\ytxkkl3q.k21 
 Input coverage: 
 Unified diff: 
 Excluded line regular expressions: 
 Substitute pdb source paths: 
 
-[2021-03-12 15:05:15] [info] Module: E:\__Teme\Object-Oriented Programming (OOP)\Lab2-4\Debug\Lab2-4.exe is selected because it matches selected pattern: E:\__Teme\Object-Oriented Programming (OOP)\Lab2-4\Debug\Lab2-4.exe
-[2021-03-12 15:05:15] [info] ----------------------------------------------------
-[2021-03-12 15:05:15] [info] Coverage binary generated in file: C:\Users\Vic\AppData\Local\Temp\kscpl1yr.xnu
-[2021-03-12 15:05:15] [info] ----------------------------------------------------
+[2021-03-22 22:57:15] [info] Module: E:\__Teme\Object-Oriented Programming (OOP)\Lab2-4\Debug\Lab2-4.exe is selected because it matches selected pattern: E:\__Teme\Object-Oriented Programming (OOP)\Lab2-4\Debug\Lab2-4.exe
+[2021-03-22 22:57:15] [info] ----------------------------------------------------
+[2021-03-22 22:57:15] [info] Coverage binary generated in file: C:\Users\Vic\AppData\Local\Temp\ytxkkl3q.k21
+[2021-03-22 22:57:15] [info] ----------------------------------------------------

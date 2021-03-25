@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "repo.h"
 #include "validator.h"
 #include "utils.h"
@@ -10,7 +12,7 @@ int srvAdaugareMP(Repo* repo, char* nume, char* producator, int cantitate)
 	{
 		MatPrima* mp = constructorMP(nume, producator, cantitate);
 
-		int cod2 = repoAdaugareMP(repo, mp);
+		repoAdaugareMP(repo, mp);
 	}
 
 	return cod;
@@ -83,62 +85,50 @@ int srvStergereMP(Repo* repo, char* nume)
 
 }
 
-void srvVizualizare(Repo* repo, char litera, int cantitate, char* string, char* criteriu)
+Repo* srvVizualizare(Repo* repo, char litera, int cantitate, char* criteriu)
 {
 	int indecsi[1001], lungime = 0, i;
+	Repo* repoFiltrat = constructorRepo();
 
 	if (strcmp(criteriu, "litera") == 0)
 	{
-		lungime = getIndecsiCuPrimaLitera(repo, litera, indecsi);
+		lungime = getFromPrimaLitera(repo, litera, indecsi);
 		if (lungime == 0)
 		{
-			strcpy(string, "Nu exista Materii Prime cu prima litera data!\n");
-			return;}
-
-		else
-			strcpy(string, "Materiile Prime cu prima litera data sunt: \n");
+			repoFiltrat->lungime = -1;
+			return repoFiltrat;
+		}
 	}
 
 	else
 	{
-		lungime = getIndecsiCuCantitate(repo, cantitate, indecsi);
+		lungime = getFromCantitate(repo, cantitate, indecsi);
 		if (lungime == 0)
 		{
-			strcpy(string, "Nu exista Materii Prime cu cantitatea mai mica decat cea data!\n");
-			return;}
-
-		else
-			strcpy(string, "Materiile Prime cu cantitatea mai mica decat cea data sunt: \n");
+			repoFiltrat->lungime = -1;
+			return repoFiltrat;
+		}
 	}
 
 	MatPrima* mp;
-	char numStr[21] = "";
 	for (i = 0; i <= lungime - 1; i++)
 	{
-		mp = getMPDinIndex(repo, indecsi[i]);
+		mp = copieMP(getMPDinIndex(repo, indecsi[i]));
 
-		strcat(string, "Nume: ");
-		strcat(string, mp->nume);
-
-		strcat(string, ", Producator: ");
-		strcat(string, mp->producator);
-
-		strcat(string, ", Cantitate: ");
-		intToString(mp->cantitate, numStr);
-		strcat(string, numStr);
-
-		strcat(string, "\n");
+		repoAdaugareMP(repoFiltrat, mp);
 	}
+
+	return repoFiltrat;
 }
 
-void srvSortareGenerica(Repo* repo, char* camp, char* ordine)
+void srvSortareGenerica(Repo* repo, char* camp, char* ordine, int (*comparator)())
 {
 	int i, j;
 	MatPrima* aux;
 
 	for(i = 0; i <= repo->lungime - 2; i++)
 		for(j = i + 1; j <= repo->lungime - 1; j++)
-			if (comparatorGeneric(repo->continut[i], repo->continut[j], camp, ordine) == -1)
+			if (comparator(repo->continut[i], repo->continut[j], camp, ordine) == -1)
 			{
 				aux = repo->continut[i];
 				repo->continut[i] = repo->continut[j];

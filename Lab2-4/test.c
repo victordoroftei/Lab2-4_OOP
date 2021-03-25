@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -21,6 +22,12 @@ void testDomain()
 	assert(strcmp(mp->producator, "Ferma din Sat") == 0);
 	assert(mp->cantitate == 500);
 
+	MatPrima* mpnou = copieMP(mp);
+	assert(strcmp(mpnou->nume, "Faina") == 0);
+	assert(strcmp(mpnou->producator, "Ferma din Sat") == 0);
+	assert(mpnou->cantitate == 500);
+
+	destructorMP(mpnou);
 	destructorMP(mp);
 }
 
@@ -107,11 +114,11 @@ void testRepo()
 
 	repoAfisare(repo);
 
-	// testGetIndecsiCuPrimaLitera();
+	// testGetFromPrimaLitera();
 
 	int indecsi[101];
 
-	assert(getIndecsiCuPrimaLitera(repo, 'F', indecsi) == 1);
+	assert(getFromPrimaLitera(repo, 'F', indecsi) == 1);
 	assert(indecsi[0] == 1);
 
 	// testGetMPDinIndex();
@@ -142,6 +149,16 @@ void testRepo()
 	assert(strcmp(repo->continut[0]->producator, "Moara de la Sat") == 0);
 	assert(repo->continut[0]->cantitate == 500);
 
+	// testCopieRepo();
+
+	Repo* reponou = copieRepo(repo);
+	assert(reponou->lungime == 1);
+	assert(strcmp(reponou->continut[0]->nume, "Faina") == 0);
+	assert(strcmp(reponou->continut[0]->producator, "Moara de la Sat") == 0);
+	assert(reponou->continut[0]->cantitate == 500);
+
+	destructorRepo(reponou);
+
 	repoStergereMP(repo, 0);
 	assert(repo->lungime == 0);
 	repoAfisare(repo);
@@ -161,7 +178,7 @@ void testService()
 	Repo* repo = constructorRepo();
 
 	int cod = srvAdaugareMP(repo, "Lapte", "Vaca din Sat", 3000);
-	
+
 	assert(repo->lungime == 1);
 	assert(strcmp(repo->continut[0]->nume, "Lapte") == 0);
 	assert(strcmp(repo->continut[0]->producator, "Vaca din Sat") == 0);
@@ -186,7 +203,7 @@ void testService()
 	cod = srvModificareMP(repo, "", "Ferma Mica", 100, "Zahar");
 	assert(cod == 5);
 
-	int aux = srvAdaugareMP(repo, "Vanilie", "Tarile Calde", 2050);
+	srvAdaugareMP(repo, "Vanilie", "Tarile Calde", 2050);
 	cod = srvModificareMP(repo, "Vanilie", "Zanzibar", 350, "Zahar");
 	assert(cod == 6);
 
@@ -204,7 +221,7 @@ void testService()
 
 	// testSrvSortareGenerica();
 
-	srvSortareGenerica(repo, "nume", "cresc");
+	srvSortareGenerica(repo, "nume", "cresc", comparatorGeneric);
 	assert(strcmp(repo->continut[0]->nume, "Vanilie") == 0);
 	assert(strcmp(repo->continut[0]->producator, "Zanzibar") == 0);
 	assert(repo->continut[0]->cantitate == 350);
@@ -217,22 +234,34 @@ void testService()
 
 	// testSrvVizualizare();
 
-	char string[1001] = "";
-	srvVizualizare(repo, 'X', 0, string, "litera");
-	printf("**%s**\n", string);
-	assert(strcmp(string, "Nu exista Materii Prime cu prima litera data!\n") == 0);
+	Repo* repoFiltrat = srvVizualizare(repo, 'X', 0, "litera");
+	assert(repoFiltrat->lungime == -1);
+	destructorRepo(repoFiltrat);
 
-	strcpy(string, "");
-	srvVizualizare(repo, 'Z', 0, string, "litera");
-	assert(strcmp(string, "Materiile Prime cu prima litera data sunt: \nNume: Zahar, Producator: Ferma locala, Cantitate: 22500\n") == 0);
+	repoFiltrat = srvVizualizare(repo, 'Z', 0, "litera");
+	assert(repoFiltrat->lungime == 1);
 
-	strcpy(string, "");
-	srvVizualizare(repo, "", 100, string, "cantitate");
-	assert(strcmp(string, "Nu exista Materii Prime cu cantitatea mai mica decat cea data!\n") == 0);
+	assert(strcmp(repoFiltrat->continut[0]->nume, "Zahar") == 0);
+	assert(strcmp(repoFiltrat->continut[0]->producator, "Ferma locala") == 0);
+	assert(repoFiltrat->continut[0]->cantitate == 22500);
+	destructorRepo(repoFiltrat);
 
-	strcpy(string, "");
-	srvVizualizare(repo, "", 30000, string, "cantitate");
-	assert(strcmp(string, "Materiile Prime cu cantitatea mai mica decat cea data sunt: \nNume: Vanilie, Producator: Zanzibar, Cantitate: 350\nNume: Zahar, Producator: Ferma locala, Cantitate: 22500\n") == 0);
+	repoFiltrat = srvVizualizare(repo, 'X', 100, "cantitate");
+
+	assert(repoFiltrat->lungime == -1);
+	destructorRepo(repoFiltrat);
+
+	repoFiltrat = srvVizualizare(repo, 'X', 30000, "cantitate");
+	assert(repoFiltrat->lungime == 2);
+
+	assert(strcmp(repoFiltrat->continut[0]->nume, "Vanilie") == 0);
+	assert(strcmp(repoFiltrat->continut[0]->producator, "Zanzibar") == 0);
+	assert(repoFiltrat->continut[0]->cantitate == 350);
+
+	assert(strcmp(repoFiltrat->continut[1]->nume, "Zahar") == 0);
+	assert(strcmp(repoFiltrat->continut[1]->producator, "Ferma locala") == 0);
+	assert(repoFiltrat->continut[1]->cantitate == 22500);
+	destructorRepo(repoFiltrat);
 
 	// testSrvStergereMP();
 

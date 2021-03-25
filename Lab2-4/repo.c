@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -8,12 +9,32 @@ Repo* constructorRepo()
 {
 	Repo* repo = (Repo*)malloc(sizeof(Repo));
 
-	repo->lungime = 0;
-	repo->capacitate = 1;
-
-	repo->continut = (MatPrima**)malloc(repo->capacitate * sizeof(MatPrima*));
+	if (repo != NULL)	// Aceasta comanda este aici ca sa nu avem warning-ul cu "Dereferencing NULL pointer".
+	{
+		repo->lungime = 0;
+		repo->capacitate = 1;
+		repo->continut = (MatPrima**)malloc(repo->capacitate * sizeof(MatPrima*));
+	}
 
 	return repo;
+}
+
+Repo* copieRepo(Repo* repo)
+{
+	Repo* reponou = (Repo*)malloc(sizeof(Repo));
+
+	if (reponou != NULL)
+	{
+		reponou->lungime = repo->lungime;
+		reponou->capacitate = repo->capacitate;
+		reponou->continut = (MatPrima**)malloc(reponou->capacitate * sizeof(MatPrima*));
+
+		int i;
+		for (i = 0; i <= repo->lungime - 1; i++)
+			reponou->continut[i] = copieMP(repo->continut[i]);
+	}
+
+	return reponou;
 }
 
 void destructorRepo(Repo* repo)
@@ -38,7 +59,7 @@ void realocareRepo(Repo* repo)
 		Preconditii:
 			- repo: repository-ul de Materii Prime
 
-		Postconditii;
+		Postconditii:	
 			- repo: repository-ul de Materii Prime cu capacitatea dublata
 
 		Functia realoca memoria in cazul in care urmatorul element ce va fi adaugat depaseste capacitatea maxima.
@@ -46,38 +67,25 @@ void realocareRepo(Repo* repo)
 		dezalocarea fostului continut din repo si copierea listei noi inapoi in repo.
 	*/
 
-	MatPrima** listaNoua = malloc(2 * (repo->capacitate) * sizeof(MatPrima*));
+	if (repo->capacitate != 0)	// Aceasta comanda este aici, ca sa nu avem warning-ul cu "Buffer Overrun".
+	{
+		MatPrima** listaNoua = malloc(2 * (repo->capacitate) * sizeof(MatPrima*));
 
-	int i;
-	for (i = 0; i <= repo->lungime - 1; i++)
-		listaNoua[i] = repo->continut[i];
+		if (listaNoua != NULL)	// Aceasta comanda este aici ca sa nu avem warning-ul cu "Dereferencing NULL pointer".
+		{
+			int i;
+			for (i = 0; i <= repo->lungime - 1; i++)
+				listaNoua[i] = repo->continut[i];
 
-	free(repo->continut);
-	repo->continut = listaNoua;
-	repo->capacitate = repo->capacitate * 2;
+			free(repo->continut);
+			repo->continut = listaNoua;
+			repo->capacitate *= 2;
+		}
+	}
 }
 
 int repoExistentaMP(Repo* repo, MatPrima* mp)
 {
-	/*
-		Parametrii de intrare:
-			- repo: pointer spre repository-ul de Materii Prime
-			- mp: pointer spre Materia Prima care urmeaza sa fie verificata daca exista
-
-		Parametrii de iesire:
-			-
-
-		Preconditii:
-			- repo: repository-ul de Materii Prime
-			- mp: o Materie Prima
-
-		Postconditii:
-			-
-
-		Functia verifica daca exista o Materie Prima cu acelasi nume si producator ca mp (returnand pozitia sa),
-		sau cu acelasi nume dar producator diferit (returnand -2) sau nu exista nicio alta Materie Prima cu acelasi nume (returnand -1).
-	*/
-
 	int i;
 
 	for (i = 0; i <= repo->lungime - 1; i++)
@@ -164,7 +172,7 @@ int getIndexDinNume(Repo* repo, char* nume)
 	return -1;
 }
 
-int getIndecsiCuPrimaLitera(Repo* repo, char litera, int indecsi[])
+int getFromPrimaLitera(Repo* repo, char litera, int indecsi[])
 {
 	int i, lungime = 0;
 	for (i = 0; i <= repo->lungime - 1; i++)
@@ -174,7 +182,7 @@ int getIndecsiCuPrimaLitera(Repo* repo, char litera, int indecsi[])
 	return lungime;
 }
 
-int getIndecsiCuCantitate(Repo* repo, int cantitate, int indecsi[])
+int getFromCantitate(Repo* repo, int cantitate, int indecsi[])
 {
 	int i, lungime = 0;
 	for (i = 0; i <= repo->lungime - 1; i++)

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "service.h"
 #include "repo.h"
@@ -36,15 +37,19 @@ void console()
 
 		printf("\n\nIntroduceti comanda: ");
 		scanf_s("%d", &comanda);
-		gets(aux);	// Golesc buffer-ul.
+		fgets(aux, 100, stdin);	// Golesc buffer-ul.
 
 		if (comanda == 1)
 		{
 			int cantitate = -1;
 			char nume[105], producator[105];
 			printf("Introduceti datele materiei prime (nume, producator si cantitate, separate prin cate un Enter) pe care doriti sa o adaugati:\n");
-			gets(nume);
-			gets(producator);
+			fgets(nume, 100, stdin);
+			nume[strlen(nume) - 1] = '\0';
+
+			fgets(producator, 100, stdin);
+			producator[strlen(producator) - 1] = '\0';
+
 			scanf_s("%d", &cantitate);
 
 			int cod = srvAdaugareMP(repo, nume, producator, cantitate);
@@ -59,7 +64,8 @@ void console()
 			char numeOld[105];
 
 			printf("Introduceti numele materiei prime pe care doriti sa o modificati: ");
-			gets(numeOld);
+			fgets(numeOld, 100, stdin);
+			numeOld[strlen(numeOld) - 1] = '\0';
 
 			int cod = srvPreModificareMP(repo, numeOld);
 			if (cod == -1)
@@ -68,9 +74,13 @@ void console()
 				char numeNew[105], producator[105];
 
 				printf("Introduceti noile date (separate prin cate un Enter) pentru materia prima cu numele: %s\n", numeOld);
-				gets(numeNew);
-				gets(producator);
-				scanf("%d", &cantitate);
+				fgets(numeNew, 100, stdin);
+				numeNew[strlen(numeNew) - 1] = '\0';
+
+				fgets(producator, 100, stdin);
+				producator[strlen(producator) - 1] = '\0';
+
+				scanf_s("%d", &cantitate);
 
 				cod = srvModificareMP(repo, numeNew, producator, cantitate, numeOld);
 
@@ -89,7 +99,8 @@ void console()
 			char nume[105];
 
 			printf("Introduceti numele materiei prime pe care doriti sa o stergeti: ");
-			gets(nume);
+			fgets(nume, 100, stdin);
+			nume[strlen(nume) - 1] = '\0';
 
 			int cod = srvStergereMP(repo, nume);
 
@@ -101,15 +112,20 @@ void console()
 
 		else if (comanda == 4)
 		{
-			char litera = "";
+			char litera = ' ';
 
 			printf("Introduceti litera dupa care doriti sa faceti vizualizarea: ");
-			scanf("%c", &litera);
+			scanf_s("%c", &litera, 1);
 
-			char string[1005] = "";
-			srvVizualizare(repo, litera, 0, string, "litera");
+			Repo* repoFiltrat = srvVizualizare(repo, litera, 0, "litera");
+			
+			if (repoFiltrat->lungime == -1)
+				printf("\nNu exista nicio Materie Prima cu acest criteriu!\n");
 
-			printf("\n%s\n", string);
+			else
+				repoAfisare(repoFiltrat);
+			
+			destructorRepo(repoFiltrat);
 		}
 
 		else if (comanda == 5)
@@ -117,24 +133,30 @@ void console()
 			int cantitate = -1;
 
 			printf("Introduceti cantitatea dupa care doriti sa faceti vizualizarea: ");
-			scanf("%d", &cantitate);
+			scanf_s("%d", &cantitate);
 
-			char string[1005] = "";
-			srvVizualizare(repo, "", cantitate, string, "cantitate");
+			Repo* repoFiltrat = srvVizualizare(repo, ' ', cantitate, "cantitate");
 
-			printf("\n%s\n", string);
+			if (repoFiltrat->lungime == -1)
+				printf("\nNu exista nicio Materie Prima cu acest criteriu!\n");
+
+			else
+				repoAfisare(repoFiltrat);
+
+			destructorRepo(repoFiltrat);
 		}
 
 		else if (comanda == 6)
 		{
 			char ordine[11] = "";
 			printf("Introduceti ordinea in care doriti sa faceti sortarea dupa nume ('cresc' / 'descresc'): ");
-			gets(ordine);
+			fgets(ordine, 100, stdin);
+			ordine[strlen(ordine) - 1] = '\0';
 
 			int cod = validareOrdine(ordine);
 			if (cod == -1)
 			{
-				srvSortareGenerica(repo, "nume", ordine);
+				srvSortareGenerica(repo, "nume", ordine, comparatorGeneric);
 				repoAfisare(repo);
 			}
 
@@ -146,12 +168,13 @@ void console()
 		{
 			char ordine[11] = "";
 			printf("Introduceti ordinea in care doriti sa faceti sortarea dupa cantitate ('cresc' / 'descresc'): ");
-			gets(ordine);
+			fgets(ordine, 100, stdin);
+			ordine[strlen(ordine) - 1] = '\0';
 
 			int cod = validareOrdine(ordine);
 			if (cod == -1)
 			{
-				srvSortareGenerica(repo, "cantitate", ordine);
+				srvSortareGenerica(repo, "cantitate", ordine, comparatorGeneric);
 				repoAfisare(repo);
 			}
 

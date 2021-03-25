@@ -94,37 +94,36 @@ int srvStergereMP(Repo* repo, char* nume);
 	Functia returneaza un cod de eroare.
 */
 
-void srvVizualizare(Repo* repo, char litera, int cantitate, char* string, char* criteriu);
+Repo* srvVizualizare(Repo* repo, char litera, int cantitate, char* criteriu);
 /*
 	Parametri de intrare:
 		- repo: pointer catre lista de Materii Prime
 		- litera: litera dupa care se va face vizualizarea
 		- cantitate: integer, cantitatea dupa care se va face vizualizarea
-		- string: pointer catre un string
 		- criteriu: pointer catre string-ul ce va fi criteriul de vizualizare
 
 	Parametri de iesire:
-		- string: pointer catre string-ul ce va contine Materiile Prime ce satisfac criteriul, intr-un mod user-friendly
+		-
 
 	Preconditii:
 		- repo: lista de Materii Prime
 		- litera: o litera
 		- cantitate: un numar intreg
-		- string: pointer catre un string
 		- criteriu: pointer catre un string ce poate fi "litera" sau "cantitate"
 
 	Postconditii:
-		- string: pointer catre string-ul ce va contine Materiile Prime ce satisfac criteriul, intr-un mod user-friendly
+		-
 
-	Functia construieste in string repo-ul filtrat dupa criteriul dat (litera sau cantitate).
+	Functia returneaza o copie a repository-ului ce contine doar elementele filtrate.
 */
 
-void srvSortareGenerica(Repo* repo, char* camp, char* ordine);
+void srvSortareGenerica(Repo* repo, char* camp, char* ordine, int (*comparator)());
 /*
 	Parametri de intrare:
 		- repo: pointer catre lista de Materii Prime
 		- camp: pointer catre un string, ce reprezinta campul dupa care se va face sortarea ("nume" / "cantitate")
 		- ordine: pointer catre un string, ce reprezinta ordinea dupa care se va face sortarea ("cresc" / "descresc")
+		- comparator: pointer catre functia de comparare
 
 	Parametri de iesire:
 		- repo: pointer catre lista de Materii Prime sortata dupa campul camp in ordinea data

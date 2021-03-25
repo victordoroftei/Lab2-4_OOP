@@ -45,3 +45,7 @@ void destructorMP(MatPrima* mp);
 	Functia primeste ca parametru un pointer catre o materie prima si o distruge (dezaloca).
 */
 
+/*
+	
+*/
+MatPrima* copieMP(MatPrima* mp);

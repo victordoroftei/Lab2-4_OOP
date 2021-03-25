@@ -34,7 +34,7 @@ void intToString(int cantitate, char* numStr)
 	}
 
 	for (i = nrCifre - 1; i >= 0; i--)
-		numStr[nrCifre - i - 1] = cifre[i] + '0';
+		numStr[nrCifre - i - 1] = (char)cifre[i] + '0';
 }
 
 int comparatorGeneric(MatPrima* mp1, MatPrima* mp2, char* camp, char* ordine)

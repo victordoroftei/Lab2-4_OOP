@@ -1,6 +1,7 @@
 #define _CRTDBG_MAP_ALLOC
 
 #include <stdio.h>
+#include <crtdbg.h>
 
 #include "console.h"
 #include "test.h"
@@ -33,7 +34,7 @@ int main()
 	*/
 
 	rulareTeste();
-	console();
+	//console();
 	
 	_CrtDumpMemoryLeaks();
 	return 0;
